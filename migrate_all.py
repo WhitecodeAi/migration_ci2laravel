@@ -28,6 +28,7 @@ MIGRATION_SCRIPTS = [
     ("NAAC & AQAR Downloads", "migrate_naac_downloads.py"),
     ("Faculty Research Publications", "migrate_faculty_research.py"),
     ("Program Specializations & Subjects", "migrate_specializations.py"),
+    ("Department Tab Sections & Content", "migrate_department_sections.py"),
 ]
 
 DB_CONFIG = {
@@ -101,6 +102,7 @@ def main():
                 ("nirf", "NIRF Publications"),
                 ("pages", "Puck Master Pages"),
                 ("downloads", "NAAC & AQAR Downloads"),
+                ("department_section_mappings", "Department Section Tabs"),
                 ("iqacs", "IQAC Cell"),
                 ("categorys", "Castes & Categories")
             ]
@@ -119,3 +121,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
