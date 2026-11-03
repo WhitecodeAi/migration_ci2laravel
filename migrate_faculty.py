@@ -35,7 +35,16 @@ def parse_sql_values(values_str):
 
     for char in values_str:
         if escaped:
-            current_val.append(char)
+            if char == "n":
+                current_val.append("\n")
+            elif char == "r":
+                current_val.append("\r")
+            elif char == "t":
+                current_val.append("\t")
+            elif char == "0":
+                current_val.append("\0")
+            else:
+                current_val.append(char)
             escaped = False
             continue
 

@@ -36,13 +36,14 @@ def slugify(text):
 
 
 def format_puck_content(html_content):
-    block_id = f"CodeEditor-{uuid.uuid4()}"
+    block_id = f"Code Editer-{uuid.uuid4()}"
     puck_obj = {
         "content": [
             {
-                "type": "CodeEditor",
+                "type": "Code Editer",
                 "props": {
                     "id": block_id,
+                    "CodeEditer": html_content,
                     "code": html_content,
                     "codeConfig": {
                         "code": html_content,
@@ -54,7 +55,10 @@ def format_puck_content(html_content):
         ],
         "root": {
             "props": {
-                "title": None
+                "title": None,
+                "showHeader": 1,
+                "showFooter": 1,
+                "showBreadcrumb": 1
             }
         },
         "zones": []
@@ -187,18 +191,27 @@ def migrate_pages():
                     title_to_page[title_key] = {"id": new_id, "title_key": title_key}
                     inserted_count += 1
 
-            # Convert any lingering RichTextBlock to CodeEditor
-            cur.execute("SELECT id, content FROM pages WHERE content LIKE '%RichTextBlock%'")
+            # Convert any lingering RichTextBlock or CodeEditor to Code Editer with CodeEditer prop
+            cur.execute("SELECT id, content FROM pages WHERE content LIKE '%RichTextBlock%' OR content LIKE '%CodeEditor%'")
             for r in cur.fetchall():
                 try:
                     data = json.loads(r["content"])
                     modified = False
                     for b in data.get("content", []):
-                        if b.get("type") == "RichTextBlock":
-                            html = b.get("props", {}).get("content") or b.get("props", {}).get("richTextConfig", {}).get("content") or ""
-                            b["type"] = "CodeEditor"
+                        if b.get("type") in ("RichTextBlock", "CodeEditor"):
+                            props = b.get("props", {})
+                            html = (
+                                props.get("CodeEditer")
+                                or props.get("code")
+                                or props.get("codeConfig", {}).get("code")
+                                or props.get("content")
+                                or props.get("richTextConfig", {}).get("content")
+                                or ""
+                            )
+                            b["type"] = "Code Editer"
                             b["props"] = {
-                                "id": f"CodeEditor-{r['id']}",
+                                "id": f"Code Editer-{r['id']}",
+                                "CodeEditer": html,
                                 "code": html,
                                 "codeConfig": {
                                     "code": html,
