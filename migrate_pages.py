@@ -36,16 +36,18 @@ def slugify(text):
 
 
 def format_puck_content(html_content):
-    block_id = f"RichTextBlock-{uuid.uuid4()}"
+    block_id = f"CodeEditor-{uuid.uuid4()}"
     puck_obj = {
         "content": [
             {
-                "type": "RichTextBlock",
+                "type": "CodeEditor",
                 "props": {
                     "id": block_id,
-                    "content": html_content,
-                    "richTextConfig": {
-                        "content": html_content
+                    "code": html_content,
+                    "codeConfig": {
+                        "code": html_content,
+                        "editorHeight": "500px",
+                        "containerStyle": "default"
                     }
                 }
             }
@@ -184,6 +186,31 @@ def migrate_pages():
                     slug_to_page[page_slug] = {"id": new_id, "slug": page_slug}
                     title_to_page[title_key] = {"id": new_id, "title_key": title_key}
                     inserted_count += 1
+
+            # Convert any lingering RichTextBlock to CodeEditor
+            cur.execute("SELECT id, content FROM pages WHERE content LIKE '%RichTextBlock%'")
+            for r in cur.fetchall():
+                try:
+                    data = json.loads(r["content"])
+                    modified = False
+                    for b in data.get("content", []):
+                        if b.get("type") == "RichTextBlock":
+                            html = b.get("props", {}).get("content") or b.get("props", {}).get("richTextConfig", {}).get("content") or ""
+                            b["type"] = "CodeEditor"
+                            b["props"] = {
+                                "id": f"CodeEditor-{r['id']}",
+                                "code": html,
+                                "codeConfig": {
+                                    "code": html,
+                                    "editorHeight": "500px",
+                                    "containerStyle": "default"
+                                }
+                            }
+                            modified = True
+                    if modified:
+                        cur.execute("UPDATE pages SET content = %s WHERE id = %s", (json.dumps(data, ensure_ascii=False), r["id"]))
+                except Exception:
+                    pass
 
             conn.commit()
             print(f"\nMigration Results:")
