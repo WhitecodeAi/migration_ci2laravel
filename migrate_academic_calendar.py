@@ -187,3 +187,4 @@ def migrate_academic_calendar():
 
 if __name__ == "__main__":
     migrate_academic_calendar()
+
