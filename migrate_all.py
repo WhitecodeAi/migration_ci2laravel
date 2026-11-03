@@ -29,6 +29,7 @@ MIGRATION_SCRIPTS = [
     ("Faculty Research Publications", "migrate_faculty_research.py"),
     ("Program Specializations & Subjects", "migrate_specializations.py"),
     ("Department Tab Sections & Content", "migrate_department_sections.py"),
+    ("Website Navigation Menus", "migrate_menu.py"),
 ]
 
 DB_CONFIG = {
@@ -104,7 +105,9 @@ def main():
                 ("downloads", "NAAC & AQAR Downloads"),
                 ("department_section_mappings", "Department Section Tabs"),
                 ("iqacs", "IQAC Cell"),
-                ("categorys", "Castes & Categories")
+                ("categorys", "Castes & Categories"),
+                ("navigations", "Navigation Menus"),
+                ("page_navigation_mappings", "Page Navigation Mappings"),
             ]
             grand_total = 0
             for tbl, name in tables:
