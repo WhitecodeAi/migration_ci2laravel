@@ -85,24 +85,57 @@ def migrate_menus():
                     nav_map[nav_name] = nav_id
             conn.commit()
 
-            # 4. Load all pages from DB
-            cur.execute("SELECT id, LOWER(TRIM(title)) as title_key, slug FROM pages WHERE delete_bit = '0' OR delete_bit = 0")
+            # Fix Page 6 title if needed
+            cur.execute("UPDATE pages SET title = %s, seo_title = %s WHERE id = 6 AND slug = 'principals-message'", ("Principal's Message", "Principal's Message"))
+            conn.commit()
+
+            # Load all pages from DB
+            cur.execute("""
+            SELECT id, LOWER(TRIM(title)) as title_key, slug,
+                   (content IS NOT NULL AND content != '') as has_c
+            FROM pages
+            WHERE delete_bit = '0' OR delete_bit = 0
+            """)
             db_pages = cur.fetchall()
             page_by_title = {p["title_key"]: p for p in db_pages}
+            page_by_slug = {p["slug"]: p for p in db_pages if p.get("slug")}
             page_by_id = {p["id"]: p for p in db_pages}
             existing_slugs = {p["slug"] for p in db_pages if p.get("slug")}
 
             def get_or_create_page(ci_id, item_title):
                 item_title_clean = item_title.strip()
                 t_key = item_title_clean.lower()
-                if t_key in page_by_title:
-                    return page_by_title[t_key]["id"]
 
-                # Check if ci_id exists in ci_pages_by_id
                 ci_meta = ci_pages_by_id.get(ci_id, {})
+                pane_name = str(ci_meta.get("tmp_pane_name") or "").strip().lower()
+                page_title = str(ci_meta.get("tmp_page_title") or "").strip().lower()
+                menu_link = str(ci_meta.get("tmp_menu_link") or "").strip()
                 page_type = ci_meta.get("tmp_page_type", "")
-                menu_link = ci_meta.get("tmp_menu_link", "")
 
+                slug_match = re.match(r"page/\d+/(.+)", menu_link)
+                link_slug = slug_match.group(1).lower() if slug_match else None
+
+                candidates_title = [t_key, pane_name, page_title]
+
+                # 1. Match by title among pages with real content
+                for ct in candidates_title:
+                    if ct and ct in page_by_title and page_by_title[ct]["has_c"]:
+                        return page_by_title[ct]["id"]
+
+                # 2. Match by link slug among pages with real content
+                if link_slug and link_slug in page_by_slug and page_by_slug[link_slug]["has_c"]:
+                    return page_by_slug[link_slug]["id"]
+
+                # 3. Match by title among existing pages
+                for ct in candidates_title:
+                    if ct and ct in page_by_title:
+                        return page_by_title[ct]["id"]
+
+                # 4. Match by link slug among existing pages
+                if link_slug and link_slug in page_by_slug:
+                    return page_by_slug[link_slug]["id"]
+
+                # 5. Otherwise create placeholder / external page
                 is_ext = '1' if page_type == 'custom_link' or menu_link.startswith('http') or menu_link == '#' else '0'
                 ext_link = menu_link if is_ext == '1' else None
                 ext_target = 1 if ci_meta.get("tmp_menu_target") == '_blank' else 0
@@ -116,7 +149,6 @@ def migrate_menus():
                     suf += 1
                 existing_slugs.add(cand_slug)
 
-                # Insert placeholder/link page
                 cur.execute("""
                 INSERT INTO pages (
                     title, seo_title, slug, content, meta_tag, meta_description,
@@ -131,8 +163,9 @@ def migrate_menus():
                 )
                 """, (item_title_clean, item_title_clean, cand_slug, is_ext, ext_link, ext_target, now_ts, now_ts))
                 new_pid = cur.lastrowid
-                p_obj = {"id": new_pid, "title_key": t_key, "slug": cand_slug}
+                p_obj = {"id": new_pid, "title_key": t_key, "slug": cand_slug, "has_c": 0}
                 page_by_title[t_key] = p_obj
+                page_by_slug[cand_slug] = p_obj
                 page_by_id[new_pid] = p_obj
                 return new_pid
 
@@ -233,3 +266,4 @@ def migrate_menus():
 
 if __name__ == "__main__":
     migrate_menus()
+
