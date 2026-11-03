@@ -341,3 +341,4 @@ def migrate_academics():
 
 if __name__ == "__main__":
     migrate_academics()
+
