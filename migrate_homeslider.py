@@ -11,17 +11,7 @@ import re
 import pymysql
 from datetime import datetime
 
-DB_CONFIG = {
-    "host": "193.203.184.233",
-    "port": 3306,
-    "user": "u207346834_sathayelara",
-    "password": "Fp>6ClxZZ6",
-    "database": "u207346834_sathayelara",
-    "charset": "utf8mb4",
-    "cursorclass": pymysql.cursors.DictCursor
-}
-
-SQL_FILE = "u208972730_scnewcms.sql"
+from db_config import DB_CONFIG, SQL_FILE
 
 def parse_sql_values(values_str):
     records = []

@@ -1,0 +1,220 @@
+<style>
+  .chetna-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin: 20px 0 40px;
+    font-family: inherit;
+  }
+  .chetna-sidebar {
+    flex: 1 1 240px;
+    max-width: 280px;
+  }
+  .chetna-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .chetna-tab-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #334155;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .chetna-tab-btn:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+  .chetna-tab-btn.active {
+    background: #1e40af;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+  }
+  .chetna-content {
+    flex: 3 1 500px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    min-height: 400px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .chetna-pane {
+    display: none;
+  }
+  .chetna-pane.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chetna-pane h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #1e3a8a;
+    font-size: 22px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+  }
+  .chetna-pane img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .chetna-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .chetna-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  .chetna-table th, .chetna-table td {
+    border: 1px solid #cbd5e1;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  .chetna-table th {
+    background: #1e40af;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  .chetna-table tr:nth-child(even) {
+    background: #f8fafc;
+  }
+  .chetna-btn-view {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #f59e0b;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .chetna-btn-view:hover {
+    background: #d97706;
+  }
+</style>
+
+<div class="chetna-container">
+  <!-- Left Side Tab Navigation -->
+  <div class="chetna-sidebar">
+    <div class="chetna-nav">
+      <button class="chetna-tab-btn active" onclick="switchChetnaTab(event, 'about')">About Chetna</button>
+      <button class="chetna-tab-btn" onclick="switchChetnaTab(event, 'vision')">Vision</button>
+      <button class="chetna-tab-btn" onclick="switchChetnaTab(event, 'mission')">Mission</button>
+      <button class="chetna-tab-btn" onclick="switchChetnaTab(event, 'courses')">Course Offered</button>
+      <button class="chetna-tab-btn" onclick="switchChetnaTab(event, 'brochure')">Brochure</button>
+      <button class="chetna-tab-btn" onclick="switchChetnaTab(event, 'gallery')">Gallery</button>
+    </div>
+  </div>
+
+  <!-- Right Side Tab Content -->
+  <div class="chetna-content">
+    <!-- 1. About Chetna -->
+    <div id="chetna-about" class="chetna-pane active">
+      <h3>About Chetna</h3>
+      <p><img src="https://mnwc.edu.in/wp-content/uploads/2024/12/0002.png" alt="About Chetna 1" onerror="this.style.display='none'" /></p>
+      <p><img src="https://mnwc.edu.in/wp-content/uploads/2024/12/0005.png" alt="About Chetna 2" onerror="this.style.display='none'" /></p>
+    </div>
+
+    <!-- 2. Vision -->
+    <div id="chetna-vision" class="chetna-pane">
+      <h3>Vision</h3>
+      <p><img src="https://mnwc.edu.in/wp-content/uploads/2024/12/0003.png" alt="Chetna Vision" onerror="this.style.display='none'" /></p>
+    </div>
+
+    <!-- 3. Mission -->
+    <div id="chetna-mission" class="chetna-pane">
+      <h3>Mission</h3>
+      <p><img src="https://mnwc.edu.in/wp-content/uploads/2024/12/0004.png" alt="Chetna Mission" onerror="this.style.display='none'" /></p>
+    </div>
+
+    <!-- 4. Course Offered -->
+    <div id="chetna-courses" class="chetna-pane">
+      <h3>Courses Offered</h3>
+      <table class="chetna-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">Sr. No.</th>
+            <th>Title</th>
+            <th style="width: 120px;">Document</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.</td>
+            <td>Courses Offered 2023-24</td>
+            <td><a class="chetna-btn-view" href="https://mnwc.edu.in/wp-content/uploads/2024/12/4.1_CHETNA_Courses-Offered_23-24.pdf" target="_blank" rel="noopener noreferrer">View PDF</a></td>
+          </tr>
+          <tr>
+            <td>2.</td>
+            <td>Courses Offered 2024-25</td>
+            <td><a class="chetna-btn-view" href="https://mnwc.edu.in/wp-content/uploads/2024/12/4.2_CHETNA_Courses-Offered_24-25.pdf" target="_blank" rel="noopener noreferrer">View PDF</a></td>
+          </tr>
+          <tr>
+            <td>3.</td>
+            <td>Other Courses</td>
+            <td><a class="chetna-btn-view" href="https://mnwc.edu.in/wp-content/uploads/2024/12/4.3_CHETNA_Other-Courses.pdf" target="_blank" rel="noopener noreferrer">View PDF</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. Brochure -->
+    <div id="chetna-brochure" class="chetna-pane">
+      <h3>Brochure</h3>
+      <div class="chetna-grid">
+        <img src="https://mnwc.edu.in/wp-content/uploads/2024/11/BD-BROCHURE.jpeg" alt="BD Brochure" onerror="this.style.display='none'" />
+        <img src="https://mnwc.edu.in/wp-content/uploads/2024/11/Bcom-brochure.jpeg" alt="BCom Brochure" onerror="this.style.display='none'" />
+        <img src="https://mnwc.edu.in/wp-content/uploads/2024/11/MCOM-BROCHURE.jpg" alt="MCom Brochure" onerror="this.style.display='none'" />
+        <img src="https://mnwc.edu.in/wp-content/uploads/2024/11/Brochure-With-Archana-pic.jpeg" alt="Brochure Archana" onerror="this.style.display='none'" />
+        <img src="https://mnwc.edu.in/wp-content/uploads/2024/11/Chetna_Brochure-724x1024.jpeg" alt="Chetna Brochure" onerror="this.style.display='none'" />
+      </div>
+    </div>
+
+    <!-- 6. Gallery -->
+    <div id="chetna-gallery" class="chetna-pane">
+      <h3>Gallery</h3>
+      <p style="color: #64748b; font-style: italic;">No gallery items added yet.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchChetnaTab(event, tabKey) {
+    event.preventDefault();
+    // remove active from all buttons
+    const buttons = document.querySelectorAll('.chetna-tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    // remove active from all panes
+    const panes = document.querySelectorAll('.chetna-pane');
+    panes.forEach(pane => pane.classList.remove('active'));
+
+    const targetPane = document.getElementById('chetna-' + tabKey);
+    if (targetPane) {
+      targetPane.classList.add('active');
+    }
+  }
+</script>

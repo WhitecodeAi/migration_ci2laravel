@@ -12,17 +12,7 @@ import pymysql
 from datetime import datetime
 from migrate_faculty import parse_sql_values, clean_date
 
-DB_CONFIG = {
-    "host": "193.203.184.233",
-    "port": 3306,
-    "user": "u207346834_sathayelara",
-    "password": "Fp>6ClxZZ6",
-    "database": "u207346834_sathayelara",
-    "charset": "utf8mb4",
-    "cursorclass": pymysql.cursors.DictCursor
-}
-
-SQL_FILE = "u208972730_scnewcms.sql"
+from db_config import DB_CONFIG, SQL_FILE
 
 
 def format_category_name(cat_str):

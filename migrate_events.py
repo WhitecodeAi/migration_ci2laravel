@@ -12,17 +12,7 @@ import json
 import pymysql
 from datetime import datetime
 
-DB_CONFIG = {
-    "host": "193.203.184.233",
-    "port": 3306,
-    "user": "u207346834_sathayelara",
-    "password": "Fp>6ClxZZ6",
-    "database": "u207346834_sathayelara",
-    "charset": "utf8mb4",
-    "cursorclass": pymysql.cursors.DictCursor
-}
-
-SQL_FILE = "u208972730_scnewcms.sql"
+from db_config import DB_CONFIG, SQL_FILE
 
 def parse_sql_values(values_str):
     records = []
@@ -191,14 +181,12 @@ def migrate_events():
             show_on_website, event_start_date, event_end_date, acadamicyear_id,
             event_report, description, event_thumbnail, tag_id,
             event_notice_brochure, eventtype, delete_bit, created_at,
-            updated_at, rich_description, event_category_id,
-            event_category_ids, sequence, department_ids
+            updated_at, rich_description, event_category_id
         ) VALUES (
             %s, %s, %s, %s,
             %s, %s, %s, %s,
             %s, %s, %s, %s,
             %s, %s, %s, %s,
-            %s, %s, %s,
             %s, %s, %s
         )
         ON DUPLICATE KEY UPDATE
@@ -219,10 +207,7 @@ def migrate_events():
             created_at = VALUES(created_at),
             updated_at = VALUES(updated_at),
             rich_description = VALUES(rich_description),
-            event_category_id = VALUES(event_category_id),
-            event_category_ids = VALUES(event_category_ids),
-            sequence = VALUES(sequence),
-            department_ids = VALUES(department_ids);
+            event_category_id = VALUES(event_category_id);
         """
 
         events_to_insert = []
@@ -267,8 +252,7 @@ def migrate_events():
                 show_on_website, start_date, end_date, ay_id,
                 report, plain_desc, thumb, None,
                 None, eventtype, delete_bit, created_ts,
-                created_ts, rich_desc, cat_id,
-                cat_ids_json, seq, None
+                created_ts, rich_desc, cat_id
             ))
 
         print(f"\nInserting {len(events_to_insert)} records into events_tables...")
