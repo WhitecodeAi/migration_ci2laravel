@@ -30,6 +30,12 @@ SCRIPTS = [
     ("Subjects", "migrate_subjects.py", "migrate_subjects"),
     ("IQAC & AICTE Streams", "migrate_iqac_aicte.py", "migrate_iqac_aicte"),
     ("CMS Master Pages", "migrate_pages.py", "migrate_pages"),
+    ("Department Sections", "migrate_sections.py", "migrate_sections"),
+    ("Page Dynamic Components", "migrate_page_components.py", "migrate_page_components"),
+    ("Statutory Committees & Members", "migrate_committees.py", "migrate_committees"),
+    ("Examinations & Hall Tickets", "migrate_exams_halltickets.py", "migrate_exams_halltickets"),
+    ("Legal Forms & Lookups", "migrate_legal_forms.py", "migrate_legal_forms"),
+    ("NAAC & Media Files", "migrate_naac_files.py", "migrate_naac_files"),
 ]
 
 def main():
@@ -79,7 +85,7 @@ def main():
         print(f"\nWARNING: {len(failed)} module(s) encountered issues.")
         sys.exit(1)
     else:
-        print("\nAll 22 modules migrated successfully into Laravel database!")
+        print(f"\nAll {len(results)} modules migrated successfully into Laravel database!")
 
 if __name__ == "__main__":
     main()
