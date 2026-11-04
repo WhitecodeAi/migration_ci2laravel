@@ -296,15 +296,17 @@ def migrate_exams_halltickets():
                 for _, vals in m_pub_res:
                     for r in parse_sql_values(vals):
                         d = dict(zip(cols_pr, r))
-                        r_id = int(d.get("id") or d.get("r_id") or 1)
-                        r_title = clean_val(d.get("title") or d.get("r_title") or "Semester Results")
-                        r_src = clean_path(d.get("source") or d.get("r_pdf") or "")
+                        r_id = int(d.get("id") or d.get("r_id") or d.get("tr_id") or 1)
+                        r_title = clean_val(d.get("title") or d.get("r_title") or d.get("tr_title") or "Semester Results")
+                        r_src = clean_path(d.get("source") or d.get("r_pdf") or d.get("tr_link") or "")
+                        r_year = clean_val(d.get("academic_year") or d.get("tr_year") or "2026-27")
                         cur.execute("""
                             INSERT INTO results (id, title, source, academic_year, show_on_website, delete_bit, created_at, updated_at)
-                            VALUES (%s, %s, %s, '2026-27', 1, 0, %s, %s)
+                            VALUES (%s, %s, %s, %s, 1, 0, %s, %s)
                             ON DUPLICATE KEY UPDATE title = VALUES(title), source = VALUES(source)
-                        """, (r_id, r_title, r_src, now_ts, now_ts))
+                        """, (r_id, r_title, r_src, r_year, now_ts, now_ts))
                 conn.commit()
+                print(f"Migrated {len(m_pub_res)} public result records.")
 
             print("\n=== EXAMINATIONS & HALL TICKETS MIGRATION COMPLETE! ===")
 

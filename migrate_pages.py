@@ -158,6 +158,18 @@ def migrate_pages():
             conn.commit()
             print(f"Successfully migrated {migrated} CMS page(s).")
 
+            # Map all pages to College Admin (user_id=2) and Super Admin (user_id=1) in user_page_mappings
+            print("Mapping all pages to admin users in user_page_mappings...")
+            cur.execute("""
+                INSERT IGNORE INTO user_page_mappings (user_id, page_id, created_at, updated_at)
+                SELECT 2, id, NOW(), NOW() FROM pages WHERE delete_bit = '0'
+            """)
+            cur.execute("""
+                INSERT IGNORE INTO user_page_mappings (user_id, page_id, created_at, updated_at)
+                SELECT 1, id, NOW(), NOW() FROM pages WHERE delete_bit = '0'
+            """)
+            conn.commit()
+
             cur.execute("SELECT COUNT(*) AS c FROM pages WHERE delete_bit = '0'")
             print(f"Total active pages count: {cur.fetchone()['c']}")
     finally:
