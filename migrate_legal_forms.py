@@ -78,6 +78,36 @@ def migrate_legal_forms():
             # ---------------------------------------------------------
             # 2. Hostel Registrations (tbl_hostel_registration -> hostel_registrations)
             # ---------------------------------------------------------
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS hostel_registrations (
+                    id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    status varchar(255) DEFAULT 'Approved',
+                    name_of_student varchar(255) DEFAULT NULL,
+                    class_name varchar(255) DEFAULT NULL,
+                    dob date DEFAULT NULL,
+                    date_of_admission date DEFAULT NULL,
+                    parent_address text DEFAULT NULL,
+                    current_address text DEFAULT NULL,
+                    mobile_no varchar(50) DEFAULT NULL,
+                    email_id varchar(100) DEFAULT NULL,
+                    father_name varchar(255) DEFAULT NULL,
+                    father_occupation varchar(255) DEFAULT NULL,
+                    father_contact varchar(50) DEFAULT NULL,
+                    mother_name varchar(255) DEFAULT NULL,
+                    mother_occupation varchar(255) DEFAULT NULL,
+                    mother_contact varchar(50) DEFAULT NULL,
+                    lg1_name varchar(255) DEFAULT NULL,
+                    lg1_mobile varchar(50) DEFAULT NULL,
+                    lg1_address text DEFAULT NULL,
+                    lg2_name varchar(255) DEFAULT NULL,
+                    lg2_mobile varchar(50) DEFAULT NULL,
+                    lg2_address text DEFAULT NULL,
+                    delete_bit tinyint(4) DEFAULT 0,
+                    created_at timestamp NULL DEFAULT NULL,
+                    updated_at timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """)
             m_hos = re.findall(r"INSERT INTO [`\x27]?tbl_hostel_registration[`\x27]?[^\(]*\((.*?)\)\s*VALUES\s*(.*?);(?:\r?\n|$)", sql, re.DOTALL)
             hos_count = 0
             if m_hos:
@@ -184,6 +214,29 @@ def migrate_legal_forms():
             # ---------------------------------------------------------
             # 5. NSS Enrollment (tbl_nss_enrollment -> nss_enrollments)
             # ---------------------------------------------------------
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS nss_enrollments (
+                    id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    status varchar(255) DEFAULT 'Approved',
+                    full_name varchar(255) DEFAULT NULL,
+                    branch varchar(255) DEFAULT NULL,
+                    roll_no varchar(255) DEFAULT NULL,
+                    batch varchar(255) DEFAULT NULL,
+                    dob date DEFAULT NULL,
+                    category varchar(255) DEFAULT NULL,
+                    blood_group varchar(50) DEFAULT NULL,
+                    height_weight varchar(255) DEFAULT NULL,
+                    residential_address text DEFAULT NULL,
+                    father_guardian_name varchar(255) DEFAULT NULL,
+                    occupation varchar(255) DEFAULT NULL,
+                    nss_group_no varchar(255) DEFAULT NULL,
+                    student_mobile varchar(50) DEFAULT NULL,
+                    student_email varchar(100) DEFAULT NULL,
+                    created_at timestamp NULL DEFAULT NULL,
+                    updated_at timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """)
             m_nss = re.findall(r"INSERT INTO [`\x27]?tbl_nss_enrollment[`\x27]?[^\(]*\((.*?)\)\s*VALUES\s*(.*?);(?:\r?\n|$)", sql, re.DOTALL)
             nss_count = 0
             if m_nss:

@@ -61,6 +61,31 @@ def migrate_iqac_aicte():
     conn = pymysql.connect(**DB_CONFIG)
     try:
         with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS iqacs (
+                    id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    college_id bigint(20) DEFAULT 1,
+                    stream_id bigint(20) DEFAULT NULL,
+                    name varchar(255) DEFAULT NULL,
+                    delete_bit tinyint(4) DEFAULT 0,
+                    created_at timestamp NULL DEFAULT NULL,
+                    updated_at timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """)
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS aictes (
+                    id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    college_id bigint(20) DEFAULT 1,
+                    stream_id bigint(20) DEFAULT NULL,
+                    name varchar(255) DEFAULT NULL,
+                    delete_bit tinyint(4) DEFAULT 0,
+                    created_at timestamp NULL DEFAULT NULL,
+                    updated_at timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """)
+
             # IQAC
             for r in raw_iqac:
                 iqac_id = int(r["til_id"])

@@ -58,9 +58,9 @@ def migrate_alumni():
     conn = pymysql.connect(**DB_CONFIG)
     try:
         with conn.cursor() as cur:
-            print("\n[Step 1] Migrating tbl_alumni_registration -> alumni_forms...")
+            print("\n[Step 1] Migrating tbl_alumni_registration / tbl_alumni_registration_new -> alumni_forms...")
             m_alumni = re.findall(
-                r"INSERT INTO [`\x27]?tbl_alumni_registration[`\x27]?[^\(]*\((.*?)\)\s*VALUES\s*(.*?);\n",
+                r"INSERT INTO [`\x27]?tbl_alumni_registration(?:_new)?[`\x27]?[^\(]*\((.*?)\)\s*VALUES\s*(.*?);(?:\r?\n|$)",
                 sql,
                 re.DOTALL
             )

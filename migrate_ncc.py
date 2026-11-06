@@ -46,6 +46,30 @@ def migrate_ncc():
     conn = pymysql.connect(**DB_CONFIG)
     try:
         with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS ncc_enrollments (
+                    id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    status varchar(255) DEFAULT 'Pending',
+                    academic_year varchar(50) DEFAULT NULL,
+                    academic_year_id bigint(20) DEFAULT NULL,
+                    full_name varchar(255) DEFAULT NULL,
+                    father_name varchar(255) DEFAULT NULL,
+                    mother_name varchar(255) DEFAULT NULL,
+                    dob date DEFAULT NULL,
+                    nationality varchar(100) DEFAULT 'Indian',
+                    blood_group varchar(50) DEFAULT NULL,
+                    institution_details text DEFAULT NULL,
+                    aadhar_no varchar(50) DEFAULT NULL,
+                    previous_ncc_training varchar(255) DEFAULT NULL,
+                    student_mobile varchar(50) DEFAULT NULL,
+                    student_email varchar(100) DEFAULT NULL,
+                    remarks text DEFAULT NULL,
+                    created_at timestamp NULL DEFAULT NULL,
+                    updated_at timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """)
+
             insert_query = """
             INSERT INTO ncc_enrollments (
                 id, status, academic_year, academic_year_id, full_name, father_name,

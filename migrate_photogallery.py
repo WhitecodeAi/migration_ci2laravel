@@ -163,12 +163,24 @@ def migrate_photogallery():
 
             created_ts = clean_timestamp(g.get("tg_created_date"))
 
-            galleries_to_insert.append((
-                g_id, title, description, description,
-                thumbnail, academic_year, cat_name, gallery_tag,
-                view_style, None, None, None, None, None,
-                delete_bit, created_ts, created_ts
-            ))
+            # Check if news_id exists in galleries schema
+            cur.execute("SHOW COLUMNS FROM galleries LIKE 'news_id'")
+            has_news_id = bool(cur.fetchone())
+
+            if has_news_id:
+                galleries_to_insert.append((
+                    g_id, title, description, description,
+                    thumbnail, academic_year, cat_name, gallery_tag,
+                    view_style, None, None, None, None, None,
+                    delete_bit, created_ts, created_ts
+                ))
+            else:
+                galleries_to_insert.append((
+                    g_id, title, description, description,
+                    thumbnail, academic_year, cat_name, gallery_tag,
+                    view_style, None, None, None, None,
+                    delete_bit, created_ts, created_ts
+                ))
 
             photos_by_gallery[g_id] = (photo_list, created_ts)
 
@@ -176,31 +188,58 @@ def migrate_photogallery():
         # Step 3: Insert into galleries
         # ---------------------------------------------------------
         print(f"\nInserting {len(galleries_to_insert)} records into galleries...")
-        insert_gallery_query = """
-        INSERT INTO galleries (
-            id, title, discription, description,
-            thumbnail_path, academic_year, category, gallery_tag,
-            view_style, activities, event_id, news_id, department, committee_id,
-            delete_bit, created_at, updated_at
-        ) VALUES (
-            %s, %s, %s, %s,
-            %s, %s, %s, %s,
-            %s, %s, %s, %s, %s, %s,
-            %s, %s, %s
-        )
-        ON DUPLICATE KEY UPDATE
-            title = VALUES(title),
-            discription = VALUES(discription),
-            description = VALUES(description),
-            thumbnail_path = VALUES(thumbnail_path),
-            academic_year = VALUES(academic_year),
-            category = VALUES(category),
-            gallery_tag = VALUES(gallery_tag),
-            view_style = VALUES(view_style),
-            delete_bit = VALUES(delete_bit),
-            created_at = VALUES(created_at),
-            updated_at = VALUES(updated_at);
-        """
+        if has_news_id:
+            insert_gallery_query = """
+            INSERT INTO galleries (
+                id, title, discription, description,
+                thumbnail_path, academic_year, category, gallery_tag,
+                view_style, activities, event_id, news_id, department, committee_id,
+                delete_bit, created_at, updated_at
+            ) VALUES (
+                %s, %s, %s, %s,
+                %s, %s, %s, %s,
+                %s, %s, %s, %s, %s, %s,
+                %s, %s, %s
+            )
+            ON DUPLICATE KEY UPDATE
+                title = VALUES(title),
+                discription = VALUES(discription),
+                description = VALUES(description),
+                thumbnail_path = VALUES(thumbnail_path),
+                academic_year = VALUES(academic_year),
+                category = VALUES(category),
+                gallery_tag = VALUES(gallery_tag),
+                view_style = VALUES(view_style),
+                delete_bit = VALUES(delete_bit),
+                created_at = VALUES(created_at),
+                updated_at = VALUES(updated_at);
+            """
+        else:
+            insert_gallery_query = """
+            INSERT INTO galleries (
+                id, title, discription, description,
+                thumbnail_path, academic_year, category, gallery_tag,
+                view_style, activities, event_id, department, committee_id,
+                delete_bit, created_at, updated_at
+            ) VALUES (
+                %s, %s, %s, %s,
+                %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s
+            )
+            ON DUPLICATE KEY UPDATE
+                title = VALUES(title),
+                discription = VALUES(discription),
+                description = VALUES(description),
+                thumbnail_path = VALUES(thumbnail_path),
+                academic_year = VALUES(academic_year),
+                category = VALUES(category),
+                gallery_tag = VALUES(gallery_tag),
+                view_style = VALUES(view_style),
+                delete_bit = VALUES(delete_bit),
+                created_at = VALUES(created_at),
+                updated_at = VALUES(updated_at);
+            """
 
         batch_size = 100
         for i in range(0, len(galleries_to_insert), batch_size):
@@ -244,7 +283,7 @@ def migrate_photogallery():
         for g_id, (photo_list, created_ts) in photos_by_gallery.items():
             for seq, (p_path, p_caption, p_tag) in enumerate(photo_list, start=1):
                 cur.execute(insert_photo_query, (
-                    p_path, p_caption, 0, None,
+                    p_path, p_caption, 0, "",
                     p_tag, 0, created_ts, created_ts
                 ))
                 photo_id = cur.lastrowid

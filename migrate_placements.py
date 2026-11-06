@@ -46,6 +46,32 @@ def migrate_placements():
     conn = pymysql.connect(**DB_CONFIG)
     try:
         with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS placement_registrations (
+                    id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                    full_name varchar(255) DEFAULT NULL,
+                    gender varchar(50) DEFAULT NULL,
+                    dob date DEFAULT NULL,
+                    mobile_no varchar(50) DEFAULT NULL,
+                    email_id varchar(100) DEFAULT NULL,
+                    roll_no varchar(255) DEFAULT NULL,
+                    department varchar(255) DEFAULT NULL,
+                    course varchar(255) DEFAULT NULL,
+                    year_of_passing varchar(50) DEFAULT NULL,
+                    current_semester varchar(50) DEFAULT NULL,
+                    cgpa varchar(50) DEFAULT NULL,
+                    interested_job_role varchar(255) DEFAULT NULL,
+                    preferred_location varchar(255) DEFAULT NULL,
+                    skills text DEFAULT NULL,
+                    internships text DEFAULT NULL,
+                    resume_path varchar(255) DEFAULT NULL,
+                    photo_path varchar(255) DEFAULT NULL,
+                    created_at timestamp NULL DEFAULT NULL,
+                    updated_at timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """)
+
             insert_query = """
             INSERT INTO placement_registrations (
                 id, full_name, gender, dob, mobile_no, email_id, roll_no,
